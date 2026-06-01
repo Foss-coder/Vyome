@@ -1,136 +1,79 @@
 <script lang="ts">
-	import '../app.css';
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
-	import favicon from '$lib/assets/favicon.svg';
-	import { onMount } from 'svelte';
+import { onMount } from 'svelte';
+import '../app.css';
 
-	let { children } = $props();
+let cursorEl: HTMLDivElement | null = null;
+let mouseX = -100;
+let mouseY = -100;
+let cursorX = -100;
+let cursorY = -100;
+let isHovering = false;
 
-	// Custom physical cursor tracking for elite interactive finish
-	let cursorEl: HTMLDivElement | null = $state(null);
-	let mouseX = $state(-100);
-	let mouseY = $state(-100);
-	let cursorX = $state(-100);
-	let cursorY = $state(-100);
-	let isHoveringInteractable = $state(false);
+onMount(() => {
+	const handleMouseMove = (event: MouseEvent) => {
+		mouseX = event.clientX;
+		mouseY = event.clientY;
+	};
 
-	onMount(() => {
-		const handleMouseMove = (e: MouseEvent) => {
-			mouseX = e.clientX;
-			mouseY = e.clientY;
-		};
+	const handlePointer = (event: MouseEvent) => {
+		const target = event.target as HTMLElement;
+		isHovering = Boolean(target.closest('a') || target.closest('button'));
+	};
 
-		const handleMouseOver = (e: MouseEvent) => {
-			const target = e.target as HTMLElement;
-			if (
-				target.closest('a') || 
-				target.closest('button') || 
-				target.closest('.interactive-card') ||
-				target.closest('[role="button"]')
-			) {
-				isHoveringInteractable = true;
-			} else {
-				isHoveringInteractable = false;
-			}
-		};
+	window.addEventListener('mousemove', handleMouseMove);
+	window.addEventListener('mouseover', handlePointer);
 
-		window.addEventListener('mousemove', handleMouseMove);
-		window.addEventListener('mouseover', handleMouseOver);
+	let frameId: number;
+	const follow = () => {
+		const dx = mouseX - cursorX;
+		const dy = mouseY - cursorY;
+		cursorX += dx * 0.12;
+		cursorY += dy * 0.12;
 
-		// Physics-based custom animation frame loop to follow mouse heavily (luxury damping)
-		let frameId: number;
-		const tick = () => {
-			const dx = mouseX - cursorX;
-			const dy = mouseY - cursorY;
-			cursorX += dx * 0.08; // Small factor = heavy damping
-			cursorY += dy * 0.08;
+		if (cursorEl) {
+			cursorEl.style.transform = `translate3d(${cursorX - 8}px, ${cursorY - 8}px, 0)`;
+			cursorEl.style.opacity = mouseX < 0 ? '0' : '1';
+		}
 
-			if (cursorEl) {
-				cursorEl.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) scale(${isHoveringInteractable ? 1.6 : 1})`;
-				cursorEl.style.opacity = mouseX < 0 ? '0' : '1';
-			}
-			frameId = requestAnimationFrame(tick);
-		};
+		frameId = requestAnimationFrame(follow);
+	};
 
-		tick();
+	follow();
 
-		return () => {
-			window.removeEventListener('mousemove', handleMouseMove);
-			window.removeEventListener('mouseover', handleMouseOver);
-			cancelAnimationFrame(frameId);
-		};
-	});
+	return () => {
+		window.removeEventListener('mousemove', handleMouseMove);
+		window.removeEventListener('mouseover', handlePointer);
+		cancelAnimationFrame(frameId);
+	};
+});
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
 	<title>VYOME | Architectural Digital Ecosystems</title>
-	<meta name="description" content="We architect premium, high-end digital transformation platforms and ecosystems for luxury hotels, fashion brands, real estate, and architectural practices." />
-	<!-- Preload Clash Display and Satoshi -->
-	<link rel="preconnect" href="https://api.fontshare.com" />
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<meta name="description" content="We architect premium digital ecosystems and luxury digital real estate for resorts, fashion, real estate, and architecture." />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </svelte:head>
 
-<!-- Premium Physical Cursor Overlay (Invisible on touch devices via CSS hover queries) -->
-<div 
-	bind:this={cursorEl} 
-	class="custom-cursor"
-	class:hovering={isHoveringInteractable}
-></div>
+<div class="page-shell">
+	<div class="site-shell">
+		<header class="site-nav">
+			<a class="nav-brand" href="/">VYOME</a>
+			<nav class="nav-links">
+				<a href="/work">Work</a>
+				<a href="/services">Services</a>
+				<a href="/contact">Contact</a>
+			</nav>
+		</header>
 
-<div class="app-viewport">
-	<Header />
-	
-	<main class="main-content">
-		{@render children()}
-	</main>
+		<main>
+			<slot />
+		</main>
 
-	<Footer />
+		<footer class="page-footer">
+			<p class="footer-copy">VYOME · We architect high-end digital ecosystems</p>
+			<p class="footer-copy">2026 | Exclusive digital atelier for luxury experiences</p>
+		</footer>
+	</div>
 </div>
 
-<style>
-	.app-viewport {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-		background-color: rgb(var(--color-bg));
-		position: relative;
-	}
-
-	.main-content {
-		flex: 1 0 auto;
-		z-index: 10;
-	}
-
-	/* Custom cursor styling */
-	.custom-cursor {
-		position: fixed;
-		top: -10px;
-		left: -10px;
-		width: 20px;
-		height: 20px;
-		border: 1px solid rgba(var(--color-accent), 0.4);
-		border-radius: 50%;
-		pointer-events: none;
-		z-index: 9999;
-		mix-blend-mode: difference;
-		transition: width 0.3s var(--ease-luxury), 
-					height 0.3s var(--ease-luxury), 
-					border-color 0.3s var(--ease-luxury), 
-					background-color 0.3s var(--ease-luxury);
-		opacity: 0;
-	}
-
-	.custom-cursor.hovering {
-		background-color: rgba(var(--color-accent), 0.1);
-		border-color: rgba(var(--color-accent), 0.8);
-	}
-
-	@media (pointer: coarse) {
-		.custom-cursor {
-			display: none;
-		}
-	}
-</style>
+<div bind:this={cursorEl} class:hovering={isHovering} class="custom-cursor"></div>
