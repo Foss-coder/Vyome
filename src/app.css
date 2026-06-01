@@ -1,0 +1,192 @@
+/* Font Imports */
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@300,400,500,600,700&f[]=satoshi@300,400,500,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+/* CSS Variables */
+:root {
+	/* Color Architecture ("The Digital Atelier") */
+	--color-bg-hex: #0A0A0B;
+	--color-bg: 10, 10, 11; /* Onyx Obsidian: 90% visual weight */
+	--color-text-hex: #F4F4F6;
+	--color-text: 244, 244, 246; /* Alabaster Silk: 7% visual weight */
+	--color-accent-hex: #D1D1D6;
+	--color-accent: 209, 209, 214; /* Kinetic Platinum: 3% visual weight */
+	--color-pulse-hex: #00E575;
+	--color-pulse: 0, 229, 117; /* Cyber Emerald: Glowing indicator pulse */
+
+	/* Typography Scale */
+	--font-primary: 'Clash Display', 'Inter', system-ui, -apple-system, sans-serif;
+	--font-editorial: 'Cormorant Garamond', 'Georgia', serif;
+	--font-body: 'Satoshi', 'Inter', system-ui, -apple-system, sans-serif;
+	--font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+	/* Custom Physics Easing Curve (tactile luxury feel) */
+	--ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+	--transition-slow: 0.8s var(--ease-luxury);
+	--transition-medium: 0.5s var(--ease-luxury);
+	--transition-fast: 0.25s var(--ease-luxury);
+}
+
+/* Global Reset */
+*, *::before, *::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html, body {
+	background-color: rgb(var(--color-bg));
+	color: rgb(var(--color-text));
+	font-family: var(--font-body);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	overflow-x: hidden;
+	scroll-behavior: smooth;
+}
+
+body {
+	position: relative;
+	min-height: 100vh;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgb(var(--color-bg));
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgba(var(--color-accent), 0.15);
+	border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: rgba(var(--color-accent), 0.3);
+}
+
+/* Custom Base Typography Rules */
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--font-primary);
+	font-weight: 500;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: rgb(var(--color-text));
+}
+
+p {
+	font-size: 1.05rem;
+	line-height: 1.7;
+	font-weight: 300;
+	color: rgba(var(--color-text), 0.75);
+}
+
+/* Technical Badges (SF Mono / JetBrains Mono) */
+.tech-badge {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: rgba(var(--color-accent), 0.8);
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 8px;
+	border: 1px solid rgba(var(--color-accent), 0.1);
+	background: rgba(var(--color-bg), 0.5);
+	user-select: none;
+}
+
+.tech-badge .status-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background-color: rgb(var(--color-pulse));
+	box-shadow: 0 0 8px rgb(var(--color-pulse));
+}
+
+/* Architectural Macro-Whitespace: 80/20 Rule */
+.section-spacer {
+	padding-top: clamp(80px, 12vw, 200px);
+	padding-bottom: clamp(80px, 12vw, 200px);
+}
+
+.container-architect {
+	max-width: 1440px;
+	margin: 0 auto;
+	padding-left: clamp(24px, 6vw, 120px);
+	padding-right: clamp(24px, 6vw, 120px);
+}
+
+/* Glassmorphism Structural Cards */
+.glass-panel {
+	background: rgba(var(--color-bg), 0.7);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	transition: border-color var(--transition-medium), background var(--transition-medium);
+}
+
+.glass-panel:hover {
+	border-color: rgba(255, 255, 255, 0.08);
+	background: rgba(var(--color-bg), 0.75);
+}
+
+/* Interactive SVG path tracing utilities */
+.traceable-svg path,
+.traceable-svg rect,
+.traceable-svg circle,
+.traceable-svg line,
+.traceable-svg polyline {
+	transition: stroke-dashoffset 1.2s var(--ease-luxury), stroke var(--transition-medium);
+}
+
+/* Editorial Style Overrides */
+.editorial-text {
+	font-family: var(--font-editorial);
+	font-weight: 300;
+	font-style: italic;
+	color: rgba(var(--color-text), 0.9);
+}
+
+/* Decorative Divider Lines */
+.divider-platinum {
+	height: 1px;
+	background: linear-gradient(90deg, 
+		rgba(var(--color-accent), 0.15) 0%, 
+		rgba(var(--color-accent), 0.03) 80%, 
+		rgba(var(--color-accent), 0) 100%
+	);
+	border: none;
+	width: 100%;
+}
+
+.divider-vertical {
+	width: 1px;
+	background: linear-gradient(180deg,
+		rgba(var(--color-accent), 0.15) 0%, 
+		rgba(var(--color-accent), 0.03) 80%, 
+		rgba(var(--color-accent), 0) 100%
+	);
+	border: none;
+	height: 100%;
+}
+
+/* Custom glow animations for pulses */
+@keyframes statusGlow {
+	0% {
+		box-shadow: 0 0 4px rgba(var(--color-pulse), 0.5), 0 0 0 0px rgba(var(--color-pulse), 0.3);
+	}
+	70% {
+		box-shadow: 0 0 8px rgba(var(--color-pulse), 0.8), 0 0 0 8px rgba(var(--color-pulse), 0);
+	}
+	100% {
+		box-shadow: 0 0 4px rgba(var(--color-pulse), 0.5), 0 0 0 0px rgba(var(--color-pulse), 0);
+	}
+}
+
+.pulse-animation {
+	animation: statusGlow 2s infinite var(--ease-luxury);
+}
